@@ -21,3 +21,24 @@ jobs:
           java-version: '11'
 
       - name: Install Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 33
+          build-tools: 33.0.2
+
+      - name: Unzip project
+        run: unzip invoice.zip -d appsrc
+
+      - name: Make gradlew executable
+        run: chmod +x appsrc/InvoiceApp/gradlew || true
+
+      - name: Build APK
+        run: |
+          cd appsrc/InvoiceApp
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Invoice-APK
+          path: appsrc/InvoiceApp/app/build/outputs/apk/debug/*.apk
